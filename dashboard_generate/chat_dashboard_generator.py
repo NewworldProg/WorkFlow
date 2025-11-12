@@ -97,7 +97,7 @@ class ChatDashboardGenerator:
             html_content = self.create_dashboard_html(dashboard_data)
             
             # Save to file
-            dashboard_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'dashboard_generate', 'chat_dashboard.html')
+            dashboard_path = os.path.join(os.path.dirname(__file__), 'chat_dashboard.html')
             
             with open(dashboard_path, 'w', encoding='utf-8') as f:
                 f.write(html_content)
@@ -814,7 +814,7 @@ class ChatDashboardGenerator:
         })
         
         # Save empty dashboard
-        dashboard_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'dashboard_generate', 'chat_dashboard.html')
+        dashboard_path = os.path.join(os.path.dirname(__file__), 'chat_dashboard.html')
         
         with open(dashboard_path, 'w', encoding='utf-8') as f:
             f.write(html)

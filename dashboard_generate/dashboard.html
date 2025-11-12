@@ -1,0 +1,1099 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Opportunities Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a90e2 0%, #7b68ee 100%);
+            min-height: 100vh;
+            padding: 15px;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .content-section {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #14A76C;
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .pagination-info {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .jobs-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .job-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .job-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            transform: translateY(-1px);
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .job-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.3;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .job-title a {
+            color: #2c3e50;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .job-title a:hover {
+            color: #34495e;
+            text-decoration: underline;
+        }
+        
+        .cover-letter-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #27ae60;
+            color: white;
+            font-size: 0.75em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            white-space: nowrap;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        
+        .cover-letter-badge:hover {
+            background: #219a52;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .cover-letter-badge.pending {
+            background: #e74c3c;
+            cursor: default;
+        }
+        
+        .cover-letter-badge.pending:hover {
+            background: #c0392b;
+        }
+        
+        .cover-letter-badge .icon {
+            margin-right: 4px;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            background: none;
+            border: none;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+        
+        .cover-letter-content {
+            line-height: 1.6;
+            white-space: pre-wrap;
+            color: #444;
+            font-family: Georgia, serif;
+        }
+        
+        .external-link {
+            background: #3498db;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .external-link:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .job-meta-item {
+            background: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .job-type-fixed {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .job-type-hourly {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .job-description {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+        }
+        
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .skill-tag {
+            background: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+        }
+        
+        .skills-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+        }
+        
+        .skill-item {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .skill-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.85em;
+        }
+        
+        .skill-count {
+            color: #3498db;
+            font-size: 0.8em;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .page-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .page-dots {
+            padding: 8px 4px;
+            color: #999;
+        }
+        
+        .timestamp {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.85em;
+        }
+        
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .job-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .job-title {
+                margin-right: 0;
+                margin-bottom: 8px;
+            }
+            
+            .job-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .external-link {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💼 Job Opportunities Dashboard</h1>
+            <p>Freelance jobs overview - November 10, 2025 at 17:35</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">246</div>
+                <div class="stat-label">Total Opportunities</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">50</div>
+                <div class="stat-label">Data Collections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Last 7 Days</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Active Skills</div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">📊 Opportunities by Type</h2>
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Fixed price</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Hourly</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">🏆 Most Popular Skills</h2>
+            <div class="skills-section">
+                <div class="skills-grid">
+
+                    <div class="skill-item">
+                        <div class="skill-name">Python</div>
+                        <div class="skill-count">12 times</div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-name">JavaScript</div>
+                        <div class="skill-count">5 times</div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-name">PHP</div>
+                        <div class="skill-count">2 times</div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-name">Machine Learning</div>
+                        <div class="skill-count">2 times</div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-name">Data Analysis</div>
+                        <div class="skill-count">2 times</div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-name">Data Scraping</div>
+                        <div class="skill-count">2 times</div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-name">Node.js</div>
+                        <div class="skill-count">2 times</div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-name">AI Agent Development</div>
+                        <div class="skill-count">2 times</div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-name">PostgreSQL</div>
+                        <div class="skill-count">2 times</div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-name">Microsoft Excel</div>
+                        <div class="skill-count">2 times</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">
+                <span>💼 Opportunities (Page 1 of 13)</span>
+                <span class="pagination-info">Showing 20 of 246 opportunities</span>
+            </h2>
+<div class="pagination"><span class="page-btn active">1</span><a href="?page=2" class="page-btn">2</a><a href="?page=3" class="page-btn">3</a><span class="page-dots">...</span><a href="?page=13" class="page-btn">13</a><a href="?page=2" class="page-btn">Next →</a></div>
+            <div class="jobs-grid">
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Paranormal-Romance-Outline-Writers-Needed-Long-Term_~021986413047149020956/" target="_blank">Paranormal Romance Outline Writers Needed Long-Term</a>
+
+                        </div>
+
+                        <a href="#" class="cover-letter-badge" onclick="openCoverLetterModal('Paranormal Romance Outline Writers Needed Long-Term', 'trained_gpt2_smart', `Dear Hiring Manager,\n\nI am excited to apply for the Paranormal Romance Outline Writers Needed Long-Term position. I have a long history of writing and researching paranormal romance in my field. My research has led me into many fascinating areas including ghost hunting; haunted houses & haunts; supernatural phenomena; ghosts; hauntings; human sacrifice; witchcraft/witchcraft studies (my own); historical fiction; mystery novels; science fictional stories; thrillers; crime thriller; suspense films etc. , as well various other genres such short story collections, mysteries, novellas or poetry books. I also enjoy exploring new topics through interviews with professional writers from different disciplines who are interested both professionally but personally in helping you develop your unique.\n\nBest regards,\n[Your Name]`)">
+                            <span class="icon">📄</span> View Cover Letter
+                        </a>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Paranormal-Romance-Outline-Writers-Needed-Long-Term_~021986413047149020956/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Fixed-price</span>
+                    </div>
+
+                    <div class="job-description">We need reliable long-term paranormal romance plot outline writers who can help shape a series of paranormal/shifter romance novels.…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Media-Freelancer-for-Article-Pitching_~021986417065575887608/" target="_blank">Media Freelancer for Article Pitching</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Media-Freelancer-for-Article-Pitching_~021986417065575887608/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">We are seeking a skilled media freelancer to pitch articles to publications. The ideal candidate should have experience in pitching art…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Writer-Who-Loves-Shop-Online-Research-Write-Discuss-Online-Shopping-Tips_~021985400849599774491/" target="_blank">Writer Who Loves to Shop Online - Research, Write & Discuss Online Shopping Tips</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Writer-Who-Loves-Shop-Online-Research-Write-Discuss-Online-Shopping-Tips_~021985400849599774491/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">We are a digital marketing agency looking to hire a few U.S. based people to help us build online communities across various industries…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/commerce-News-Writer_~021986429041190281509/" target="_blank">E-commerce News Writer</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/commerce-News-Writer_~021986429041190281509/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">We are seeking a writer to join our e-commerce news site. The role involves creating engaging and original content focused on e-commerc…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Medium-Publication-Submission-Specialist-Needed_~021986434006211938076/" target="_blank">Medium Publication Submission Specialist Needed</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Medium-Publication-Submission-Specialist-Needed_~021986434006211938076/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Fixed-price</span>
+                    </div>
+
+                    <div class="job-description">’m seeking an experienced Medium editor and publication manager who can take my completed article drafts and handle everything from top…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Topic-Researcher-for-Science-and-Mysterious-Content_~021986371392494786477/" target="_blank">Topic Researcher for Science and Mysterious Content</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Topic-Researcher-for-Science-and-Mysterious-Content_~021986371392494786477/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Fixed-price</span>
+                    </div>
+
+                    <div class="job-description">We are seeking a skilled topic researcher to help create engaging and mysterious content for our youtube channel. The focus will be on…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Experienced-Content-Writer-Needed-for-Engaging-Articles_~021986422790197895859/" target="_blank">Experienced Content Writer Needed for Engaging Articles</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Experienced-Content-Writer-Needed-for-Engaging-Articles_~021986422790197895859/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Fixed-price</span>
+                    </div>
+
+                    <div class="job-description">We are seeking a talented content writer to create compelling articles for our blog. The ideal candidate should have a knack for storyt…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Website-Content-Creation-and-SEO-Specialist-Needed_~021986425283509133605/" target="_blank">Website Content Creation and SEO Specialist Needed</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Website-Content-Creation-and-SEO-Specialist-Needed_~021986425283509133605/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">We are seeking a skilled professional to enhance our website through effective content creation and SEO strategies. The ideal candidate…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Youtube-Documentary-Scriptwriter_~021986430583368753445/" target="_blank">Youtube Documentary Scriptwriter</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Youtube-Documentary-Scriptwriter_~021986430583368753445/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Fixed-price</span>
+                    </div>
+
+                    <div class="job-description">Experience Media is seeking a talented scriptwriter to create engaging and cinematic scripts rooted in Vedic philosophy. The ideal cand…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Fact-Checker-for-Generated-Content_~021986434466997625523/" target="_blank">Fact Checker for AI-Generated Content</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Fact-Checker-for-Generated-Content_~021986434466997625523/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">We are seeking a detail-oriented fact checker to review and verify the accuracy of AI-generated articles and marketing copy. The role i…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Car-Forum-Outreach-Specialist_~021985698000786209842/" target="_blank">Car Forum Outreach Specialist</a>
+
+                        </div>
+
+                        <a href="#" class="cover-letter-badge" onclick="openCoverLetterModal('Car Forum Outreach Specialist', 'trained_gpt2_smart', `Dear Hiring Manager,\n\nI am excited to apply for the Car Forum Outreach Specialist position. I have been involved in driving and maintenance projects since 2008. Over the years my knowledge of automotive technology has expanded greatly as well with many experience working on vehicles ranging from small cars up through large-scale multiengine sports utility trucks (SUVs). My skills are highly sought after by customers across North America and Europe who want a team member that can provide exceptional customer service at competitive rates. We would like you see me first before making any other offers or contacts!\n\nBest Regards, Mark.\n\nBest regards,\n[Your Name]`)">
+                            <span class="icon">📄</span> View Cover Letter
+                        </a>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Car-Forum-Outreach-Specialist_~021985698000786209842/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">Join and engage with car forums to promote Brightstone Engineering, a UK machining company specializing in automotive parts. Participat…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Ghostwriter-contracted-solid-publisher-based-PhD-research-from-Startup-Dream-Reality_~021985708449903964650/" target="_blank">Ghostwriter (contracted by solid publisher) based on my PhD research (from Startup Dream to Reality)</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Ghostwriter-contracted-solid-publisher-based-PhD-research-from-Startup-Dream-Reality_~021985708449903964650/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Fixed-price</span>
+                    </div>
+
+                    <div class="job-description">Project summary
+We’re looking for a versatile and intellectually curious ghostwriter to help transform a set of academic research paper…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Freelancer-earning-10K-month-Get-paid-teach-your-skill-hrs-week_~021985714384177230314/" target="_blank">Freelancer earning $3–10K/month? Get paid to teach your skill (≈5 hrs/week)</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Freelancer-earning-10K-month-Get-paid-teach-your-skill-hrs-week_~021985714384177230314/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">I’m building an online education platform that helps young adults learn real-world, income-producing skills directly from people who ac…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Freelance-Opportunities-for-MPhil-Zoology-Graduates_~021985698910950747864/" target="_blank">Freelance Opportunities for MPhil Zoology Graduates</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Freelance-Opportunities-for-MPhil-Zoology-Graduates_~021985698910950747864/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">Are you an MPhil Zoology graduate looking to leverage your knowledge and skills in the freelancing world? We are seeking creative profe…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Website-Copywriter-Needed-for-Engaging-Content_~021985674294148219760/" target="_blank">Website Copywriter Needed for Engaging Content</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Website-Copywriter-Needed-for-Engaging-Content_~021985674294148219760/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Fixed-price</span>
+                    </div>
+
+                    <div class="job-description">We are seeking a talented website copywriter to create engaging and compelling content for our website. The ideal candidate will have a…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Copywriter-Creative-Strategist-Performance-Brand_~021983902617604946707/" target="_blank">Copywriter / Creative Strategist (Performance + Brand)</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Copywriter-Creative-Strategist-Performance-Brand_~021983902617604946707/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">Role Overview
+You’ll be the bridge between research, storytelling, and performance, turning raw insight into creative angles that sell.…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Screenwriter-for-YouTube-channel-about-car-chases_~021985711381927981546/" target="_blank">Screenwriter for a YouTube channel about car chases</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Screenwriter-for-YouTube-channel-about-car-chases_~021985711381927981546/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Fixed-price</span>
+                    </div>
+
+                    <div class="job-description">Description:
+I’m looking for an experienced scriptwriter for my faceless YouTube channel.
+
+Below are some details:
+
+Payment: $15 per sc…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Ghostwriter-for-Self-Help-Book-Personal-Growth_~021985717317368639192/" target="_blank">Ghostwriter for Self-Help Book on Personal Growth</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Ghostwriter-for-Self-Help-Book-Personal-Growth_~021985717317368639192/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">Seeking an experienced ghostwriter to review and expand the first draft of a self-help book focused on personal growth for a general au…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Branching-Dialogue-Tree-Creation_~021985718584685411378/" target="_blank">Branching Dialogue Tree Creation</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Branching-Dialogue-Tree-Creation_~021985718584685411378/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Fixed-price</span>
+                    </div>
+
+                    <div class="job-description">I am looking for a creative writer to develop a branching dialogue tree for a video game.
+
+The dialogue tree consists of 68 nodes, whic…</div>
+
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-title">
+
+                            <a href="https://www.upwork.com/freelance-jobs/apply/Content-Writer-and-Social-Media-Specialist-Needed_~021985674459920035544/" target="_blank">Content Writer and Social Media Specialist Needed</a>
+
+                        </div>
+
+                        <div class="cover-letter-badge pending">
+                            <span class="icon">⏳</span> No Cover Letter
+                        </div>
+
+                        <a href="https://www.upwork.com/freelance-jobs/apply/Content-Writer-and-Social-Media-Specialist-Needed_~021985674459920035544/" target="_blank" class="external-link">View Opportunity →</a>
+
+                    </div>
+                    <div class="job-meta">
+
+                        <span class="job-meta-item">📅 Hourly</span>
+                    </div>
+
+                    <div class="job-description">We are seeking a skilled content writer and social media specialist to create engaging content and manage our social media presence. Th…</div>
+
+                </div>
+
+            </div>
+<div class="pagination"><span class="page-btn active">1</span><a href="?page=2" class="page-btn">2</a><a href="?page=3" class="page-btn">3</a><span class="page-dots">...</span><a href="?page=13" class="page-btn">13</a><a href="?page=2" class="page-btn">Next →</a></div>
+        </div>
+
+        <div class="timestamp">
+            <p>📊 Dashboard generated: November 10, 2025 at 17:35:55</p>
+            <p>🗃️ Database: upwork_data.db | Page: 1/13 | Total Opportunities: 246</p>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-refresh page every 5 minutes
+        setTimeout(function() {
+            location.reload();
+        }, 300000);
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                const prevBtn = document.querySelector('.page-btn[href*="page=0"]');
+                if (prevBtn) prevBtn.click();
+            }
+            if (e.key === 'ArrowRight') {
+                const nextBtn = document.querySelector('.page-btn[href*="page=2"]');
+                if (nextBtn) nextBtn.click();
+            }
+        });
+        
+        // Cover Letter Modal Functions
+        function openCoverLetterModal(jobTitle, provider, coverLetterText) {
+            const modal = document.getElementById('coverLetterModal');
+            const modalTitle = document.getElementById('modalJobTitle');
+            const modalProvider = document.getElementById('modalProvider');
+            const modalContent = document.getElementById('coverLetterContent');
+            
+            modalTitle.textContent = jobTitle;
+            modalProvider.textContent = provider;
+            modalContent.textContent = coverLetterText.replace(/\\n/g, '\n');
+            
+            modal.style.display = 'block';
+        }
+        
+        function closeCoverLetterModal() {
+            document.getElementById('coverLetterModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('coverLetterModal');
+            if (event.target === modal) {
+                closeCoverLetterModal();
+            }
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCoverLetterModal();
+            }
+        });
+    </script>
+    
+    <!-- Cover Letter Modal -->
+    <div id="coverLetterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title" id="modalJobTitle">Job Title</div>
+                    <div style="font-size: 0.9em; color: #666; margin-top: 4px;">
+                        Generated by: <span id="modalProvider">AI</span>
+                    </div>
+                </div>
+                <button class="close-modal" onclick="closeCoverLetterModal()">&times;</button>
+            </div>
+            <div class="cover-letter-content" id="coverLetterContent">
+                Cover letter content will appear here...
+            </div>
+        </div>
+    </div>
+</body>
+</html>

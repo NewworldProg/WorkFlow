@@ -50,7 +50,7 @@ class PhaseClassifier(nn.Module):
 # based on classified text detect phase
 class PhaseDetector:
     # Load and use trained phase classifier
-    #1. model directory
+    #1. model directory is entering parameter
     #2. hardware device that will run the model
     #3. metadata about the model
     #4. tokenizer for text processing

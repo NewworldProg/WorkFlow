@@ -1,0 +1,353 @@
+{
+  "metadata": {
+    "source_file": "ai/training_data/raw_data\\training_data.txt",
+    "output_file": "ai/training_data/parsed_data/training_data_parsed.json",
+    "processed_on": "2025-11-10T10:14:16.849170",
+    "total_conversations": 11,
+    "raw_text_length": 5562,
+    "processor_version": "1.0",
+    "valid_conversations": 11
+  },
+  "training_conversations": [
+    {
+      "id": 1,
+      "exchanges": [
+        {
+          "speaker": "freelancer",
+          "message": "Good Day,"
+        },
+        {
+          "speaker": "client",
+          "message": "Hello! Are you available for the writing task?"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "Goodmorning Yes I’m available Can you tell me more about your project?"
+        },
+        {
+          "speaker": "client",
+          "message": "We have various types of materials, including guest posts, slot reviews, casino reviews, blog articles, and other types of content for our project. 1) I’d like to clarify your rate per 100 words for writing, translation, and proofreading(reviews/guest posts/other material). 2) How many 1,000-word articles can you generally write per day? 3) Which tools do you use for plagiarism and AI checks? 4) Are you an agency? If so, which languages do you offer? If you’re interested, I’d love to hear more about your experience and availability. We have a defined workflow that we follow to ensure smooth collaboration and timely delivery: 1. Receive the brief from the content manager. 2. Write the text according to the brief and SEO requirements. 3. Submit the finished text for review to the content manager. Deadlines normally given by content manager, but there are some basic rules: Texts over 1000 words (reviews, listings, blog posts) — 2 business days. Texts under 1000 words (game descriptions, news, guest posts) — 1 business day. Revisions must be completed within 1 day to avoid missing deadlines. Is it okay for you? Our project is Slotsup"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "Okay sure thing You need english or dutch content?"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|freelancer|> Good Day,\n<|client|> Hello! Are you available for the writing task?\n<|freelancer|> Goodmorning Yes I’m available Can you tell me more about your project?\n<|client|> We have various types of materials, including guest posts, slot reviews, casino reviews, blog articles, and other types of content for our project. 1) I’d like to clarify your rate per 100 words for writing, translation, and proofreading(reviews/guest posts/other material). 2) How many 1,000-word articles can you generally write per day? 3) Which tools do you use for plagiarism and AI checks? 4) Are you an agency? If so, which languages do you offer? If you’re interested, I’d love to hear more about your experience and availability. We have a defined workflow that we follow to ensure smooth collaboration and timely delivery: 1. Receive the brief from the content manager. 2. Write the text according to the brief and SEO requirements. 3. Submit the finished text for review to the content manager. Deadlines normally given by content manager, but there are some basic rules: Texts over 1000 words (reviews, listings, blog posts) — 2 business days. Texts under 1000 words (game descriptions, news, guest posts) — 1 business day. Revisions must be completed within 1 day to avoid missing deadlines. Is it okay for you? Our project is Slotsup\n<|freelancer|> Okay sure thing You need english or dutch content?\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 1423
+    },
+    {
+      "id": 2,
+      "exchanges": [
+        {
+          "speaker": "client",
+          "message": "We have various types of materials, including guest posts, slot reviews, casino reviews, blog articles, and other types of content for our project. 1) I’d like to clarify your rate per 100 words for writing, translation, and proofreading(reviews/guest posts/other material). 2) How many 1,000-word articles can you generally write per day? 3) Which tools do you use for plagiarism and AI checks? 4) Are you an agency? If so, which languages do you offer? If you’re interested, I’d love to hear more about your experience and availability. We have a defined workflow that we follow to ensure smooth collaboration and timely delivery: 1. Receive the brief from the content manager. 2. Write the text according to the brief and SEO requirements. 3. Submit the finished text for review to the content manager. Deadlines normally given by content manager, but there are some basic rules: Texts over 1000 words (reviews, listings, blog posts) — 2 business days. Texts under 1000 words (game descriptions, news, guest posts) — 1 business day. Revisions must be completed within 1 day to avoid missing deadlines. Is it okay for you? Our project is Slotsup"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "Okay sure thing You need english or dutch content?"
+        },
+        {
+          "speaker": "client",
+          "message": "Dutch"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "nice my rate is 0.06 - 0.07 per word depends on the instructions and the scope and the volume"
+        },
+        {
+          "speaker": "client",
+          "message": "Please, check and let me know how much do you charge for guest posts 7 kB"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|client|> We have various types of materials, including guest posts, slot reviews, casino reviews, blog articles, and other types of content for our project. 1) I’d like to clarify your rate per 100 words for writing, translation, and proofreading(reviews/guest posts/other material). 2) How many 1,000-word articles can you generally write per day? 3) Which tools do you use for plagiarism and AI checks? 4) Are you an agency? If so, which languages do you offer? If you’re interested, I’d love to hear more about your experience and availability. We have a defined workflow that we follow to ensure smooth collaboration and timely delivery: 1. Receive the brief from the content manager. 2. Write the text according to the brief and SEO requirements. 3. Submit the finished text for review to the content manager. Deadlines normally given by content manager, but there are some basic rules: Texts over 1000 words (reviews, listings, blog posts) — 2 business days. Texts under 1000 words (game descriptions, news, guest posts) — 1 business day. Revisions must be completed within 1 day to avoid missing deadlines. Is it okay for you? Our project is Slotsup\n<|freelancer|> Okay sure thing You need english or dutch content?\n<|client|> Dutch\n<|freelancer|> nice my rate is 0.06 - 0.07 per word depends on the instructions and the scope and the volume\n<|client|> Please, check and let me know how much do you charge for guest posts 7 kB\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 1465
+    },
+    {
+      "id": 3,
+      "exchanges": [
+        {
+          "speaker": "freelancer",
+          "message": "nice my rate is 0.06 - 0.07 per word depends on the instructions and the scope and the volume"
+        },
+        {
+          "speaker": "client",
+          "message": "Please, check and let me know how much do you charge for guest posts 7 kB"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "okay it says deadline today?"
+        },
+        {
+          "speaker": "client",
+          "message": "No, deadline Monday"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "ok what you mean with its important to speak about? do you have a sample article for me which i can check so i can check the tone of voice which you consider to be 100% good fit for your project"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|freelancer|> nice my rate is 0.06 - 0.07 per word depends on the instructions and the scope and the volume\n<|client|> Please, check and let me know how much do you charge for guest posts 7 kB\n<|freelancer|> okay it says deadline today?\n<|client|> No, deadline Monday\n<|freelancer|> ok what you mean with its important to speak about? do you have a sample article for me which i can check so i can check the tone of voice which you consider to be 100% good fit for your project\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 508
+    },
+    {
+      "id": 4,
+      "exchanges": [
+        {
+          "speaker": "client",
+          "message": "No, deadline Monday"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "ok what you mean with its important to speak about? do you have a sample article for me which i can check so i can check the tone of voice which you consider to be 100% good fit for your project"
+        },
+        {
+          "speaker": "client",
+          "message": "Tone of voice depends on the website we publish, i put it inside file Example yes I will send now"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "oh i see"
+        },
+        {
+          "speaker": "client",
+          "message": "But we need in dutch 14 kB"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|client|> No, deadline Monday\n<|freelancer|> ok what you mean with its important to speak about? do you have a sample article for me which i can check so i can check the tone of voice which you consider to be 100% good fit for your project\n<|client|> Tone of voice depends on the website we publish, i put it inside file Example yes I will send now\n<|freelancer|> oh i see\n<|client|> But we need in dutch 14 kB\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 441
+    },
+    {
+      "id": 5,
+      "exchanges": [
+        {
+          "speaker": "freelancer",
+          "message": "oh i see"
+        },
+        {
+          "speaker": "client",
+          "message": "But we need in dutch 14 kB"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "where are the link instructions? when you like my content, do you need more content after this batch what ai tester tool do you use? thank you for this"
+        },
+        {
+          "speaker": "client",
+          "message": "But we need in dutch"
+        },
+        {
+          "speaker": "client",
+          "message": "In my file there are instructions and written about anchors and links I check via zerogpt"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|freelancer|> oh i see\n<|client|> But we need in dutch 14 kB\n<|freelancer|> where are the link instructions? when you like my content, do you need more content after this batch what ai tester tool do you use? thank you for this\n<|client|> But we need in dutch\n<|client|> In my file there are instructions and written about anchors and links I check via zerogpt\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 391
+    },
+    {
+      "id": 6,
+      "exchanges": [
+        {
+          "speaker": "client",
+          "message": "But we need in dutch"
+        },
+        {
+          "speaker": "client",
+          "message": "In my file there are instructions and written about anchors and links I check via zerogpt"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "ok cool ok i think i have al the needed info if you can create a contract i can start right away how many words do you need per week?"
+        },
+        {
+          "speaker": "client",
+          "message": "we have different languages, so its always different, no stable amount"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "ah ok because you were asking"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|client|> But we need in dutch\n<|client|> In my file there are instructions and written about anchors and links I check via zerogpt\n<|freelancer|> ok cool ok i think i have al the needed info if you can create a contract i can start right away how many words do you need per week?\n<|client|> we have different languages, so its always different, no stable amount\n<|freelancer|> ah ok because you were asking\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 438
+    },
+    {
+      "id": 7,
+      "exchanges": [
+        {
+          "speaker": "client",
+          "message": "we have different languages, so its always different, no stable amount"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "ah ok because you were asking"
+        },
+        {
+          "speaker": "client",
+          "message": "so, 6000 words how much?"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "you also do english?"
+        },
+        {
+          "speaker": "client",
+          "message": "yes"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|client|> we have different languages, so its always different, no stable amount\n<|freelancer|> ah ok because you were asking\n<|client|> so, 6000 words how much?\n<|freelancer|> you also do english?\n<|client|> yes\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 243
+    },
+    {
+      "id": 8,
+      "exchanges": [
+        {
+          "speaker": "freelancer",
+          "message": "you also do english?"
+        },
+        {
+          "speaker": "client",
+          "message": "yes"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "lets do 0,07 per word as I also have to pay the high fees here"
+        },
+        {
+          "speaker": "client",
+          "message": "so total how much? this task is on Dutch"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "Dutch content: 3 articles a 2000 words > 6000 words x 0,07 = $420 > deadline Monady"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|freelancer|> you also do english?\n<|client|> yes\n<|freelancer|> lets do 0,07 per word as I also have to pay the high fees here\n<|client|> so total how much? this task is on Dutch\n<|freelancer|> Dutch content: 3 articles a 2000 words > 6000 words x 0,07 = $420 > deadline Monady\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 309
+    },
+    {
+      "id": 9,
+      "exchanges": [
+        {
+          "speaker": "client",
+          "message": "so total how much? this task is on Dutch"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "Dutch content: 3 articles a 2000 words > 6000 words x 0,07 = $420 > deadline Monady"
+        },
+        {
+          "speaker": "client",
+          "message": "okay"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "i received 2 docs from you for instructions. Please send the right document which I have to do"
+        },
+        {
+          "speaker": "client",
+          "message": "Our website is about online casinos, and we’re looking for a long-term writer who understands both SEO and the iGaming audience. Languages Needed: Spanish, Korean, French, Thai, Arabic, Czech, Danish, Finnish, Hungarian, Japanese, Dutch, Norwegian, Portuguese, Romanian, Swedish, Polish, Italian, Chinese, Slovak, Greek, Serbian, Bulgarian, Slovenian, Croatian, Turkmen, Estonian, Lithuanian, English, German. What You’ll Do Write SEO articles (1,200–2,000+ words). Topics: casino reviews, slot reviews, news, guest posts. Use clear structure (H1, H2, H3, FAQs, links). Create 100% original content, plagiarism-free, AI-safe. Balance SEO with engaging, reader-friendly writing. Requirements Proven experience in iGaming/online casinos (samples required). Strong SEO knowledge (keywords, on-page optimization). Ability to make complex gaming topics easy to read. Good research skills and attention to detail. Familiarity with gambling industry rules and compliance. Excellent grammar and proofreading. Reliable with deadlines. Experience writing content that attracts and converts players. What We Offer Long-term work with regular assignments. Competitive pay (per article or per 100 words). Clear briefs and good communication with our team. Chance to grow with a fast-scaling iGaming brand. How to Apply Send us: A short intro about your writing experience (especially in iGaming). At least 2 writing samples. 👉 If you’re passionate about iGaming and skilled in SEO-friendly content that ranks and converts — apply now! Milestone 1: SEO Content Writer for iGaming Niche Project funds: $420.00 2 files 7 kB 790 kB"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|client|> so total how much? this task is on Dutch\n<|freelancer|> Dutch content: 3 articles a 2000 words > 6000 words x 0,07 = $420 > deadline Monady\n<|client|> okay\n<|freelancer|> i received 2 docs from you for instructions. Please send the right document which I have to do\n<|client|> Our website is about online casinos, and we’re looking for a long-term writer who understands both SEO and the iGaming audience. Languages Needed: Spanish, Korean, French, Thai, Arabic, Czech, Danish, Finnish, Hungarian, Japanese, Dutch, Norwegian, Portuguese, Romanian, Swedish, Polish, Italian, Chinese, Slovak, Greek, Serbian, Bulgarian, Slovenian, Croatian, Turkmen, Estonian, Lithuanian, English, German. What You’ll Do Write SEO articles (1,200–2,000+ words). Topics: casino reviews, slot reviews, news, guest posts. Use clear structure (H1, H2, H3, FAQs, links). Create 100% original content, plagiarism-free, AI-safe. Balance SEO with engaging, reader-friendly writing. Requirements Proven experience in iGaming/online casinos (samples required). Strong SEO knowledge (keywords, on-page optimization). Ability to make complex gaming topics easy to read. Good research skills and attention to detail. Familiarity with gambling industry rules and compliance. Excellent grammar and proofreading. Reliable with deadlines. Experience writing content that attracts and converts players. What We Offer Long-term work with regular assignments. Competitive pay (per article or per 100 words). Clear briefs and good communication with our team. Chance to grow with a fast-scaling iGaming brand. How to Apply Send us: A short intro about your writing experience (especially in iGaming). At least 2 writing samples. 👉 If you’re passionate about iGaming and skilled in SEO-friendly content that ranks and converts — apply now! Milestone 1: SEO Content Writer for iGaming Niche Project funds: $420.00 2 files 7 kB 790 kB\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 1932
+    },
+    {
+      "id": 10,
+      "exchanges": [
+        {
+          "speaker": "freelancer",
+          "message": "i received 2 docs from you for instructions. Please send the right document which I have to do"
+        },
+        {
+          "speaker": "client",
+          "message": "Our website is about online casinos, and we’re looking for a long-term writer who understands both SEO and the iGaming audience. Languages Needed: Spanish, Korean, French, Thai, Arabic, Czech, Danish, Finnish, Hungarian, Japanese, Dutch, Norwegian, Portuguese, Romanian, Swedish, Polish, Italian, Chinese, Slovak, Greek, Serbian, Bulgarian, Slovenian, Croatian, Turkmen, Estonian, Lithuanian, English, German. What You’ll Do Write SEO articles (1,200–2,000+ words). Topics: casino reviews, slot reviews, news, guest posts. Use clear structure (H1, H2, H3, FAQs, links). Create 100% original content, plagiarism-free, AI-safe. Balance SEO with engaging, reader-friendly writing. Requirements Proven experience in iGaming/online casinos (samples required). Strong SEO knowledge (keywords, on-page optimization). Ability to make complex gaming topics easy to read. Good research skills and attention to detail. Familiarity with gambling industry rules and compliance. Excellent grammar and proofreading. Reliable with deadlines. Experience writing content that attracts and converts players. What We Offer Long-term work with regular assignments. Competitive pay (per article or per 100 words). Clear briefs and good communication with our team. Chance to grow with a fast-scaling iGaming brand. How to Apply Send us: A short intro about your writing experience (especially in iGaming). At least 2 writing samples. 👉 If you’re passionate about iGaming and skilled in SEO-friendly content that ranks and converts — apply now! Milestone 1: SEO Content Writer for iGaming Niche Project funds: $420.00 2 files 7 kB 790 kB"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "Thanks!"
+        },
+        {
+          "speaker": "freelancer",
+          "message": "thank you Will start right away"
+        },
+        {
+          "speaker": "client",
+          "message": "thank u!"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|freelancer|> i received 2 docs from you for instructions. Please send the right document which I have to do\n<|client|> Our website is about online casinos, and we’re looking for a long-term writer who understands both SEO and the iGaming audience. Languages Needed: Spanish, Korean, French, Thai, Arabic, Czech, Danish, Finnish, Hungarian, Japanese, Dutch, Norwegian, Portuguese, Romanian, Swedish, Polish, Italian, Chinese, Slovak, Greek, Serbian, Bulgarian, Slovenian, Croatian, Turkmen, Estonian, Lithuanian, English, German. What You’ll Do Write SEO articles (1,200–2,000+ words). Topics: casino reviews, slot reviews, news, guest posts. Use clear structure (H1, H2, H3, FAQs, links). Create 100% original content, plagiarism-free, AI-safe. Balance SEO with engaging, reader-friendly writing. Requirements Proven experience in iGaming/online casinos (samples required). Strong SEO knowledge (keywords, on-page optimization). Ability to make complex gaming topics easy to read. Good research skills and attention to detail. Familiarity with gambling industry rules and compliance. Excellent grammar and proofreading. Reliable with deadlines. Experience writing content that attracts and converts players. What We Offer Long-term work with regular assignments. Competitive pay (per article or per 100 words). Clear briefs and good communication with our team. Chance to grow with a fast-scaling iGaming brand. How to Apply Send us: A short intro about your writing experience (especially in iGaming). At least 2 writing samples. 👉 If you’re passionate about iGaming and skilled in SEO-friendly content that ranks and converts — apply now! Milestone 1: SEO Content Writer for iGaming Niche Project funds: $420.00 2 files 7 kB 790 kB\n<|freelancer|> Thanks!\n<|freelancer|> thank you Will start right away\n<|client|> thank u!\n<|endoftext|>",
+      "exchange_count": 5,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 1855
+    },
+    {
+      "id": 11,
+      "exchanges": [
+        {
+          "speaker": "freelancer",
+          "message": "thank you Will start right away"
+        },
+        {
+          "speaker": "client",
+          "message": "thank u!"
+        }
+      ],
+      "formatted_training_text": "<|startoftext|>\n<|freelancer|> thank you Will start right away\n<|client|> thank u!\n<|endoftext|>",
+      "exchange_count": 2,
+      "speakers": [
+        "freelancer",
+        "client"
+      ],
+      "text_length": 96
+    }
+  ]
+}

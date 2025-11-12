@@ -17,8 +17,14 @@ from data.chat_database_manager import ChatDatabase
 from ai.phase_detector import PhaseDetector
 
 class StandalonePhaseDetector:
-    """Phase detector that only detects phases and updates database"""
-    # init model
+
+    # init database and try to load model
+    #1. root of database and model
+    #2. path to database
+    #3. path to model
+    #4. put database manager in var
+    #5. put model in var
+    #6. print metadata info
     def __init__(self):
         # var to hold root dir
         project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,11 +34,12 @@ class StandalonePhaseDetector:
         self.db = ChatDatabase(db_path)
         # var to hold model dir
         model_dir = os.path.join(project_root, "ai", "trained_models", "phase_classifier_v1")
-        
+        # log
         print("\n" + "="*60)
         print("STANDALONE PHASE DETECTOR")
         print("="*60)
         # error if model not found
+        # check if path to model exists
         if not os.path.exists(model_dir):
             print(f"❌ ERROR: BERT model not found at {model_dir}")
             print(f"   Run: python ai/train_phase_classifier.py")
@@ -40,7 +47,7 @@ class StandalonePhaseDetector:
             raise FileNotFoundError("BERT model not trained")
         
         try:
-            # call PhaseDetector class
+            # call PhaseDetector class and load model
             self.phase_detector = PhaseDetector(model_dir)
             print("✅ BERT PHASE DETECTOR LOADED")
             # print model metadata
@@ -52,12 +59,18 @@ class StandalonePhaseDetector:
             print("="*60 + "\n")
             raise
     # function to call detection and update db
+    #1. get latest session from database manager
+    #2. get recent messages from database manager
+    #3. build context string by adding object fields into one line string for tokenization
+    #4. use predict function to get phase and confidence
+    #5. update database with detected phase and confidence
+    #6. log it
     def detect_and_update_phase(self, session_id='latest'):
         """Detect phase and update database (main function)"""
-        
+        # log the session id
         print(f"[PHASE DETECT] Starting detection for session: {session_id}")
         
-        # get latest session if 'latest' specified
+        # get latest session if 'latest' specified from database manager
         if session_id == 'latest':
             latest = self.db.get_latest_session()
             if latest:
@@ -74,27 +87,29 @@ class StandalonePhaseDetector:
         # error if no messages
         if not messages:
             return {'success': False, 'error': f'No messages found for session {session_id}'}
-        
-        # Build context string for PhaseDetector tokenization
+
+        # from database data make one line string from sender and text objects
         context = "\n".join([f"{m['sender_type']}: {m['text']}" for m in messages])
+        # limit context
         context_preview = context[:100] + "..." if len(context) > 100 else context
         
         print(f"[CONTEXT] {len(messages)} messages, {len(context)} chars")
         print(f"[PREVIEW] {context_preview}")
         
-        # Detect phase using BERT model from the given context
+        # log that model is analyzing
         print("[BERT] Analyzing conversation phase...")
+        # use predict function that sets model to eval the input save output to var
         phase_result = self.phase_detector.predict(context)
-        
+        # extract phase and confidence from result
         phase = phase_result['phase']
         confidence = phase_result['confidence']
-        
+        # log it
         print(f"[RESULT] Phase: {phase}")
         print(f"[RESULT] Confidence: {confidence:.1%}")
         
-        # Update session with detected phase
+        # update database with detected phase and put it in success var
         success = self.db.update_session_phase(session_id, phase, confidence)
-        
+        # log success
         if success:
             print(f"[SUCCESS] Database updated with phase: {phase}")
             
@@ -112,11 +127,11 @@ class StandalonePhaseDetector:
                 'success': False,
                 'error': 'Failed to update database with detected phase'
             }
-
+# use argparse library for starting process from command line
 def main():
     """Command line interface"""
+    # use argparse library for starting process from command line
     import argparse
-    
     parser = argparse.ArgumentParser(description='Standalone Phase Detector')
     parser.add_argument('--session', default='latest', 
                        help='Session ID to analyze (default: latest)')

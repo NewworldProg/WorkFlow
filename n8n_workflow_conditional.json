@@ -27,7 +27,7 @@
       "__comment": "======== node for checking chrome status ==============",
       "works": "executes a powershell script to check chrome status and returns boolean to n8n",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_check_chrome_n8n.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_check_chrome_n8n.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "1dafcafb-1fc5-4b7b-9e8e-9f5f5c6e7dd1",
@@ -69,7 +69,7 @@
       "__comment": "======== node for starting chrome ==============",
       "works": "executes a powershell script to start chrome",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_start_chrome_simple.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_start_chrome_simple.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "3fafcafb-1fc5-4b7b-9e8e-9f5f5c6e7dd3",
@@ -117,7 +117,7 @@
       "__comment": "======== node for running js scraper ==============",
       "works": "executes a powershell script to run js scraper",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_js_scraper.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_js_scraper.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "5hafcafb-1fc5-4b7b-9e8e-9f5f5c6e7dd5",
@@ -133,7 +133,7 @@
       "__comment": "======== node for saving HTML to database ==============",
       "works": "saves latest scraped HTML file to database using UpworkDatabase class",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_save_html_to_db.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_save_html_to_db.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "7hafcafb-1fc5-4b7b-9e8e-9f5f5c6e7dd7",
@@ -149,7 +149,7 @@
       "__comment": "======== node for parsing HTML from database ==============",
       "works": "parses HTML from database using UpworkDatabase class and returns job data",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_parse_html_only.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_parse_html_only.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "8hafcafb-1fc5-4b7b-9e8e-9f5f5c6e7dd8",
@@ -165,7 +165,7 @@
       "__comment": "======== node for importing jobs to database ==============",
       "works": "imports parsed job data to database using UpworkDatabase class",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_import_jobs_to_db.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_import_jobs_to_db.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "9hafcafb-1fc5-4b7b-9e8e-9f5f5c6e7dd9",
@@ -181,7 +181,7 @@
       "__comment": "======== node for generating and opening dashboard ==============",
       "works": "executes a powershell script to generate and open dashboard",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_generate_and_open_dashboard.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_generate_and_open_dashboard.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "6hafcafb-1fc5-4b7b-9e8e-9f5f5c6e7dd6",

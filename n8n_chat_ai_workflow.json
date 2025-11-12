@@ -16,7 +16,7 @@
       "__comment": "======== node for checking chrome chat status ==============",
       "works": "executes a powershell script to check chrome chat status and returns boolean to n8n",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_check_chrome_chat.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_check_chrome_chat.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "1dafcafb-chat-chrome-status",
@@ -58,7 +58,7 @@
       "__comment": "======== node for starting chrome chat ==============",
       "works": "executes a powershell script to start chrome for chat",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_start_chrome_chat_simple.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_start_chrome_chat_simple.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "3fafcafb-chat-start-chrome",
@@ -106,7 +106,7 @@
       "__comment": "======== node for running chat scraper ==============",
       "works": "executes a powershell script to run chat scraper",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_chat_scraper.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_chat_scraper.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "5hafcafb-chat-scraper",
@@ -122,7 +122,7 @@
       "__comment": "======== node for parsing chat messages ==============",
       "works": "executes a powershell script to parse chat messages from HTML",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_chat_parser.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_chat_parser.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "6hafcafb-chat-parser",
@@ -148,7 +148,7 @@
         "contract_acceptance"
       ],
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_detect_phase_standalone.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_detect_phase_standalone.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "detect-phase-bert",
@@ -171,7 +171,7 @@
       "current_mode": "both",
       "how_to_change_mode": "Edit command parameter: change '-Mode both' to '-Mode template/ai' for single mode",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_generate_response.ps1\" -Mode both",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_generate_response.ps1\" -Mode both",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "generate-response",
@@ -187,7 +187,7 @@
       "__comment": "======== node for generating chat dashboard ==============",
       "works": "creates interactive HTML dashboard with chat and AI responses and opens in browser",
       "parameters": {
-        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_generate_and_open_chat_dashboard.ps1\"",
+        "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_generate_and_open_chat_dashboard.ps1\"",
         "workingDirectory": "E:\\Repoi\\UpworkNotif"
       },
       "id": "chat-dashboard",
@@ -348,4 +348,3 @@
     "working"
   ]
 }
-

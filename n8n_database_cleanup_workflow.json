@@ -1,0 +1,92 @@
+{
+    "name": "Simple Database Cleanup",
+    "nodes": [
+        {
+            "parameters": {},
+            "id": "0b3de4a8-c4c4-4f7f-9b9b-0d7f8e9c2a1b",
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "hoursInterval": 6
+                        }
+                    ]
+                }
+            },
+            "id": "1c4e5a9d-d5d5-5f8f-ac4c-1e8f9f0d3c2c",
+            "name": "Schedule Trigger",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                240,
+                480
+            ]
+        },
+        {
+            "parameters": {
+                "command": "python \"E:\\\\Repoi\\\\UpworkNotif\\\\scripts\\\\simple_n8n_cleanup.py\"",
+                "options": {}
+            },
+            "id": "2d5f6b0e-e6e6-6f9f-bd5d-2f9f0f1e4d3d",
+            "name": "Run Cleanup",
+            "type": "n8n-nodes-base.executeCommand",
+            "typeVersion": 1,
+            "position": [
+                460,
+                390
+            ]
+        }
+    ],
+    "connections": {
+        "Manual Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Run Cleanup",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Schedule Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Run Cleanup",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [
+        {
+            "id": "database",
+            "name": "database"
+        },
+        {
+            "id": "maintenance",
+            "name": "maintenance"
+        }
+    ],
+    "triggerCount": 2,
+    "updatedAt": "2025-11-10T14:40:00.000Z",
+    "versionId": "2"
+}

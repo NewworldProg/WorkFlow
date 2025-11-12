@@ -13,14 +13,15 @@ from datetime import datetime
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding='utf-8')
 
-# Add parent directory to path
+# Add parent directory to path and import database manager
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from data.chat_database_manager import ChatDatabase
 
+#class to hold templates and generate responses based on phase
 class SmartChatResponse:
     """Simple phase-based response generator with BERT AI"""
-    # ================ option 1 BERT + template responses ===============
-    # Template responses for each phase (detected by BERT AI)
+
+    # templates dict for each phase (detected by BERT AI)
     TEMPLATES = {
         'initial_response': [
             "Thank you for reaching out! I'm very interested. Could you tell me more about the project?",
@@ -95,7 +96,7 @@ class SmartChatResponse:
     }
 
 
-    # initialize BERT phase detector and database
+    # initialize database manager
     def __init__(self):
         """Initialize response generator (no phase detection)"""
         # var to hold project root
@@ -135,12 +136,16 @@ class SmartChatResponse:
         templates = self.TEMPLATES.get(phase, self.TEMPLATES['general_inquiry'])
         return templates[:min(num_options, len(templates))]
     # function to save results to temp file for dashboard
+    #1. var to hold temp file path
+    #2. temp data structure compatible with dashboard to hold suggestions
+    #3. based on result content append appropriate fields to temp_data
     def save_to_temp_file(self, result):
         """Save results to temp file for dashboard"""
         try:
+            # path to temp file
             temp_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'temp_ai_suggestions.json')
-            
-            # Create temp data structure compatible with dashboard
+
+            # Create temp data structure compatible with dashboard to hold suggestions
             temp_data = {
                 'session_id': result['session_id'],
                 'phase': result['phase'],
@@ -148,13 +153,14 @@ class SmartChatResponse:
                 'model_used': 'bert_phase_detector',
                 'created_at': datetime.now().isoformat()
             }
-            
-            # Add responses based on mode
+            # append temp_data with responses
+            # if smart_chat_response.generate() was set to return both template and AI append both
             if 'template_response' in result and 'ai_response' in result:
                 # Both mode
                 temp_data['suggestion_type'] = 'both'
                 temp_data['template_response'] = result['template_response']
                 temp_data['ai_response'] = result['ai_response']
+            # else append one or the other
             elif 'responses' in result:
                 # Template or AI mode
                 temp_data['suggestion_type'] = result.get('mode', 'template')
@@ -163,16 +169,18 @@ class SmartChatResponse:
             # Save to file
             with open(temp_file, 'w', encoding='utf-8') as f:
                 json.dump(temp_data, f, ensure_ascii=False, indent=2)
-                
+            # log it  
             print(f"[SAVE] Results saved to temp_ai_suggestions.json")
             
         except Exception as e:
             print(f"[WARN] Failed to save temp file: {e}")
 
     # function that takes phase as input and generates AI response using GPT-2
+    
     def generate_ai_response(self, phase, context, session_id):
         """Generate AI response using GPT-2"""
         try:
+            # 
             from ai.chat_gpt2_generator import ChatGPT2Generator
             gpt2 = ChatGPT2Generator()
             

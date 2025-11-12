@@ -1,10 +1,10 @@
 {
-  "session_id": "upwork_20251106_225314",
-  "phase": "contract_acceptance",
-  "confidence": 0.472,
+  "session_id": "upwork_20251112_155907",
+  "phase": "knowledge_check",
+  "confidence": 0.2913,
   "model_used": "bert_phase_detector",
-  "created_at": "2025-11-07T06:09:56.359137",
+  "created_at": "2025-11-12T16:02:14.791753",
   "suggestion_type": "both",
-  "template_response": "Contract accepted! Starting work now. You'll have it by the deadline.",
-  "ai_response": "Please answer all questions from the time you are hired to the date you sign the contract."
+  "template_response": "Yes, I have extensive experience with that topic. Let me show you my expertise.",
+  "ai_response": "The client should be able to understand the message and understand what is happening within the conversation\n. A good response is: \"I think I understa"
 }

@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from data.database_manager import UpworkDatabase
 
-# Import existing parser
+# Import existing parser (now in same directory)
 from upwork_data_parser import parse_html_file
 
 def parse_from_database():

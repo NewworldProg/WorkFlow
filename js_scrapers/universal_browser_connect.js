@@ -121,7 +121,7 @@ async function scrapeUpworkJobs(page) {
         // Call Python parser
         console.log(`🐍 Calling Python parser...`);
         const pythonCommand = 'E:/Repoi/UpworkNotif/venv/Scripts/python.exe';
-        const parserScript = path.join(__dirname, '..', 'upwork_data_parser.py');
+        const parserScript = path.join(__dirname, '..', 'scripts', 'upwork_data_parser.py');
 
         const pythonProcess = spawn(pythonCommand, [parserScript, '--input', filepath, '--import-db'], {
             cwd: path.join(__dirname, '..'),

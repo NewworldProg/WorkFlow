@@ -1,16 +1,14 @@
 """
 GPT-2 Chat Model Training Script
-Trains GPT-2 model on Upwork chat conversation data
+Trains GPT-2 model on processed JSON chat data
 """
 import os
 import json
 import torch
-import numpy as np
 from datetime import datetime
 from transformers import (
     GPT2LMHeadModel, 
     GPT2Tokenizer, 
-    TextDataset, 
     DataCollatorForLanguageModeling,
     Trainer, 
     TrainingArguments
@@ -20,169 +18,95 @@ import logging
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
-class ChatTrainingDataset(Dataset):
-    """Custom dataset for chat conversation training"""
-    
-    def __init__(self, tokenizer, file_path, block_size=512):
+class JSONChatDataset(Dataset):
+    """Dataset that loads from processed JSON chat data"""
+    # build components for extract training conversations data
+    # 1. initialize tokenizer
+    # 2. set block_size
+    # 3. initialize data container
+    # 4. initialize conversations
+    # 5. initialize training examples
+    def __init__(self, tokenizer, json_file_path, block_size=512):
+        # Initialize tokenizer
         self.tokenizer = tokenizer
+        # Set block size for tokenization
         self.block_size = block_size
+        # log loading message
+        print(f"📂 Loading processed chat data from: {json_file_path}")
         
-        # Load and preprocess chat data
-        self.examples = self.load_and_process_chat_data(file_path)
+        # initialize data container
+        with open(json_file_path, 'r', encoding='utf-8') as f:
+            self.data = json.load(f)
         
-    def load_and_process_chat_data(self, file_path):
-        """Load chat data and convert to training format"""
+        # initialize extract training conversations data
+        self.conversations = self.data["training_conversations"]
+        print(f"💬 Loaded {len(self.conversations)} training conversations")
         
-        print(f"📚 Loading chat data from: {file_path}")
-        
-        # Read the training data
-        with open(file_path, 'r', encoding='utf-8') as f:
-            chat_text = f.read()
-        
-        print(f"📄 Loaded {len(chat_text)} characters of chat data")
-        
-        # Parse chat conversations
-        conversations = self.parse_chat_conversations(chat_text)
-        print(f"💬 Parsed {len(conversations)} conversation segments")
-        
-        # Convert to training examples
+        # initialize extract training conversations data
+        self.examples = self.create_training_examples()
+    # function for create training examples
+
+    def create_training_examples(self):
+        """Create tokenized training examples from JSON data"""
+        # var to hold examples
         examples = []
-        for i, conv in enumerate(conversations):
-            # Create prompt-response pairs
-            training_text = self.format_conversation_for_training(conv)
+        # loop through conversations
+        for conv in self.conversations:
+            # get formatted training text
+            training_text = conv["formatted_training_text"]
             
-            if len(training_text) > 50:  # Only use substantial conversations
-                print(f"📝 Training example {i+1}:\n{training_text[:200]}...\n")
-                
-                # Tokenize
-                tokenized = self.tokenizer(
-                    training_text,
-                    truncation=True,
-                    max_length=self.block_size,
-                    return_tensors="pt"
-                )
-                
-                examples.append(tokenized['input_ids'].squeeze())
+            print(f"📝 Processing conversation {conv['id']}: {conv['exchange_count']} exchanges")
+            print(f"   Preview: {training_text[:150]}...")
             
-        print(f"✅ Created {len(examples)} training examples")
+            # Tokenize training text
+            tokenized = self.tokenizer(
+                training_text,
+                truncation=True,
+                max_length=self.block_size,
+                return_tensors="pt"
+            )
+            
+            examples.append(tokenized['input_ids'].squeeze())
+        
+        print(f"🎯 Created {len(examples)} tokenized training examples")
         return examples
-    
-    def parse_chat_conversations(self, chat_text):
-        """Parse chat text into structured conversations"""
-        
-        conversations = []
-        lines = chat_text.split('\n')
-        current_conversation = []
-        current_speaker = None
-        current_message = ""
-        
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-                
-            # Detect speaker changes
-            if 'Noel Angeles' in line:
-                # Save previous message
-                if current_speaker and current_message.strip():
-                    current_conversation.append({
-                        'speaker': current_speaker,
-                        'message': current_message.strip()
-                    })
-                    current_message = ""
-                
-                current_speaker = 'freelancer'
-                
-            elif 'YM' in line or 'Yuliia M' in line:
-                # Save previous message
-                if current_speaker and current_message.strip():
-                    current_conversation.append({
-                        'speaker': current_speaker,
-                        'message': current_message.strip()
-                    })
-                    current_message = ""
-                
-                current_speaker = 'client'
-                
-            # Skip system messages and timestamps
-            elif any(skip_word in line for skip_word in [
-                'View details', 'View contract', 'View offer', 'Est. Budget',
-                'AM', 'PM', '2025', '.xlsx', '.docx', 'sent an offer',
-                'accepted an offer', 'removed this message'
-            ]):
-                continue
-            else:
-                # Add to current message
-                if line and current_speaker:
-                    if current_message:
-                        current_message += " " + line
-                    else:
-                        current_message = line
-        
-        # Save last message
-        if current_speaker and current_message.strip():
-            current_conversation.append({
-                'speaker': current_speaker,
-                'message': current_message.strip()
-            })
-        
-        # Split conversation into segments for better training
-        if current_conversation:
-            # Create segments of 3-5 exchanges
-            segments = []
-            for i in range(0, len(current_conversation), 3):
-                segment = current_conversation[i:i+5]
-                if len(segment) >= 2:  # At least 2 messages (question-answer)
-                    segments.append(segment)
-            
-            conversations.extend(segments)
-            
-        return conversations
-    
-    def format_conversation_for_training(self, conversation):
-        """Format conversation for GPT-2 training"""
-        
-        formatted_text = "<|startoftext|>"
-        
-        for turn in conversation:
-            speaker = turn['speaker']
-            message = turn['message']
-            
-            # Clean up message
-            message = message.replace('\n', ' ').strip()
-            
-            if speaker == 'client':
-                formatted_text += f"\n<|client|> {message}"
-            else:
-                formatted_text += f"\n<|freelancer|> {message}"
-        
-        formatted_text += "\n<|endoftext|>"
-        
-        return formatted_text
     
     def __len__(self):
         return len(self.examples)
     
     def __getitem__(self, idx):
         return self.examples[idx]
+    
+    def get_metadata(self):
+        """Get metadata from JSON file"""
+        return self.data["metadata"]
 
 class ChatGPT2Trainer:
     """GPT-2 model trainer for chat conversations"""
-    
+    # build components for training
+    #1. model name (gpt2)
+    #2. output directory for saving models
+    #3. hardware device (cuda or cpu)
     def __init__(self, model_name="gpt2", output_dir="ai/trained_models"):
+        # model name
         self.model_name = model_name
+        # output dir
         self.output_dir = output_dir
+        # hardware device
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
-        # Create output directory
+        # Create output directory for saving models
         os.makedirs(output_dir, exist_ok=True)
         os.makedirs(os.path.join(output_dir, "advanced_chat_model"), exist_ok=True)
         os.makedirs(os.path.join(output_dir, "final_chat_model"), exist_ok=True)
         
         print(f"🔧 Using device: {self.device}")
-        
+    # function to load model and tokenizer
+    # 1. load tokenizer from pretrained model
+    # 2. add special tokens for chat    
+    # 3. load gpt2 model from pretrained
+    # 4. resize model embeddings to match new tokenizer size
     def load_model_and_tokenizer(self):
         """Load GPT-2 model and tokenizer"""
         
@@ -191,7 +115,7 @@ class ChatGPT2Trainer:
         # Load tokenizer
         self.tokenizer = GPT2Tokenizer.from_pretrained(self.model_name)
         
-        # Add special tokens for chat
+        # make dict for special tokens
         special_tokens = {
             "additional_special_tokens": [
                 "<|client|>", 
@@ -200,41 +124,63 @@ class ChatGPT2Trainer:
                 "<|endoftext|>"
             ]
         }
-        
+        # Add special tokens to tokenizer
         num_added = self.tokenizer.add_special_tokens(special_tokens)
+        # log it
         print(f"➕ Added {num_added} special tokens")
-        
+        # set pad token to eos token
         self.tokenizer.pad_token = self.tokenizer.eos_token
         
         # Load model
         self.model = GPT2LMHeadModel.from_pretrained(self.model_name)
+        # Resize model embeddings to match new tokenizer size
         self.model.resize_token_embeddings(len(self.tokenizer))
+        # move model to device
         self.model.to(self.device)
-        
+        # log vocab size
         print(f"📊 Model loaded. Vocab size: {len(self.tokenizer)}")
+    # function to train model
+    #1. load model and tokenizer
+    # 2. create dataset from chat data    
+    # 3. set up data collator for language modeling
+    # 4. define training arguments
+    # 5. create trainer
+    # 6. train the model
+    # 7. save trained model and tokenizer
+    # 8. save training metadata
+    def train_model(self, json_data_path, epochs=5, batch_size=1, learning_rate=3e-5, validate_data=True):
+        """Train the GPT-2 model on JSON chat data"""
         
-    def train_model(self, training_data_path, epochs=5, batch_size=1, learning_rate=3e-5):
-        """Train the GPT-2 model on chat data"""
-        
-        print("🚀 Starting model training...")
+        print("🚀 Starting model training from JSON data...")
         print(f"📋 Training parameters: epochs={epochs}, batch_size={batch_size}, lr={learning_rate}")
+        
+        # Validate JSON data
+        if validate_data and not self.validate_json_data(json_data_path):
+            return None
         
         # Load model and tokenizer
         self.load_model_and_tokenizer()
         
-        # Create dataset
-        dataset = ChatTrainingDataset(
+        # Create dataset from JSON
+        dataset = JSONChatDataset(
             tokenizer=self.tokenizer,
-            file_path=training_data_path,
+            json_file_path=json_data_path,
             block_size=512
         )
         
         if len(dataset) == 0:
-            raise ValueError("❌ No training examples found!")
+            raise ValueError("❌ No training examples found in JSON!")
         
         print(f"📊 Training on {len(dataset)} examples")
         
-        # Data collator
+        # Ask user confirmation
+        if validate_data:
+            user_input = input("\n➡️  Continue with training? (y/N): ").lower().strip()
+            if user_input != 'y':
+                print("⏸️  Training cancelled.")
+                return None
+        
+        # Data collator for language modeling
         data_collator = DataCollatorForLanguageModeling(
             tokenizer=self.tokenizer,
             mlm=False
@@ -257,7 +203,7 @@ class ChatGPT2Trainer:
             dataloader_drop_last=False
         )
         
-        # Create trainer
+        # Create trainer from model, args, data collator, and dataset
         trainer = Trainer(
             model=self.model,
             args=training_args,
@@ -281,17 +227,61 @@ class ChatGPT2Trainer:
         print(f"🎯 Final model saved to: {final_model_path}")
         
         # Save training metadata
-        self.save_training_metadata(final_model_path, training_data_path, epochs, batch_size, learning_rate, len(dataset))
+        metadata = dataset.get_metadata()
+        self.save_training_metadata(final_model_path, json_data_path, metadata, epochs, batch_size, learning_rate, len(dataset))
         
         return final_model_path
-    
-    def save_training_metadata(self, model_path, training_data_path, epochs, batch_size, learning_rate, num_examples):
+    # function to validate json data
+    # 1. check if file exists
+    # 2. load json data
+    # 3. print metadata and sample conversations
+    def validate_json_data(self, json_path):
+        """Validate JSON training data"""
+        if not os.path.exists(json_path):
+            print(f"❌ JSON training data not found: {json_path}")
+            return False
+        
+        print(f"🔍 Validating JSON training data: {json_path}")
+        
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        metadata = data["metadata"]
+        conversations = data["training_conversations"]
+        
+        print(f"\n📊 Training Data Validation:")
+        print(f"   📅 Processed on: {metadata['processed_on']}")
+        print(f"   📁 Source file: {metadata['source_file']}")
+        print(f"   💬 Training conversations: {len(conversations)}")
+        print(f"   📝 Processor version: {metadata.get('processor_version', 'unknown')}")
+        
+        if len(conversations) == 0:
+            print(f"❌ No training conversations found!")
+            return False
+        
+        # Show sample conversations
+        print(f"\n📋 Sample conversations:")
+        for i, conv in enumerate(conversations[:3]):
+            print(f"\n--- Conversation {conv['id']} ---")
+            print(f"Exchanges: {conv['exchange_count']}")
+            print(f"Text length: {conv['text_length']} chars")
+            print(f"Speakers: {', '.join(conv['speakers'])}")
+            # Show first exchange
+            if conv['exchanges']:
+                first_exchange = conv['exchanges'][0]
+                print(f"First message: {first_exchange['speaker']} - {first_exchange['message'][:100]}...")
+        
+        return True
+    # function to save training metadata
+    #
+    def save_training_metadata(self, model_path, json_data_path, source_metadata, epochs, batch_size, learning_rate, num_examples):
         """Save training metadata"""
         
         metadata = {
             "model_name": "trained_chat_model_1.0",
             "base_model": self.model_name,
-            "training_data": training_data_path,
+            "training_data_json": json_data_path,
+            "source_data_info": source_metadata,
             "training_params": {
                 "epochs": epochs,
                 "batch_size": batch_size,
@@ -301,7 +291,6 @@ class ChatGPT2Trainer:
             "trained_on": datetime.now().isoformat(),
             "device": str(self.device),
             "vocab_size": len(self.tokenizer),
-            "conversation_data": "Upwork freelancer-client chat about iGaming writing project",
             "special_tokens": ["<|client|>", "<|freelancer|>", "<|startoftext|>", "<|endoftext|>"]
         }
         
@@ -310,64 +299,83 @@ class ChatGPT2Trainer:
             json.dump(metadata, f, indent=2, ensure_ascii=False)
         
         print(f"📋 Training metadata saved to: {metadata_path}")
-
-def analyze_training_data():
-    """Analyze training data before training"""
+# function to list available parsed data files
+def list_available_parsed_data():
+    """List available parsed data files"""
+    parsed_data_dir = "ai/training_data/parsed_data"
     
-    training_data_path = "ai/training_data.txt"
+    print(f"📂 Available parsed data files:")
     
-    if not os.path.exists(training_data_path):
-        print(f"❌ Training data not found at: {training_data_path}")
-        return False
-    
-    print("🔍 Analyzing training data...")
-    
-    with open(training_data_path, "r", encoding="utf-8") as f:
-        content = f.read()
-    
-    print(f"📄 Training data length: {len(content)} characters")
-    print(f"📝 First 500 characters:\n{content[:500]}")
-    
-    # Count conversation participants
-    noel_count = content.count("Noel Angeles")
-    yuliia_count = content.count("Yuliia M") + content.count("YM")
-    
-    print(f"\n💬 Conversation analysis:")
-    print(f"   👨‍💻 Noel Angeles messages: {noel_count}")
-    print(f"   👩‍💼 Yuliia M messages: {yuliia_count}")
-    print(f"   💫 Total conversation turns: {noel_count + yuliia_count}")
-    
-    return True
-
+    if os.path.exists(parsed_data_dir):
+        parsed_files = [f for f in os.listdir(parsed_data_dir) if f.endswith('.json')]
+        if parsed_files:
+            for file in parsed_files:
+                file_path = os.path.join(parsed_data_dir, file)
+                size = os.path.getsize(file_path)
+                
+                # Try to read metadata
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    metadata = data.get("metadata", {})
+                    conversations = data.get("training_conversations", [])
+                    
+                    print(f"\n� {file} ({size:,} bytes)")
+                    print(f"   💬 Training conversations: {len(conversations)}")
+                    print(f"   📅 Processed: {metadata.get('processed_on', 'unknown')}")
+                    print(f"   📁 Source: {os.path.basename(metadata.get('source_file', 'unknown'))}")
+                except:
+                    print(f"\n� {file} ({size:,} bytes) - ❌ Invalid JSON")
+            
+            return parsed_files
+        else:
+            print(f"   No .json files found in {parsed_data_dir}")
+            return []
+    else:
+        print(f"   Directory not found: {parsed_data_dir}")
+        return []
+# main function to run training
 def main():
     """Main training function"""
     
     try:
-        # Analyze data first
-        if not analyze_training_data():
+        # List available parsed data files
+        parsed_files = list_available_parsed_data()
+        
+        if not parsed_files:
+            print(f"\n❌ No parsed data files found!")
+            print(f"💡 Please run 'python ai/chat_training_dataset.py' first to process raw data")
             return False
         
-        # Set training data path
-        training_data_path = "ai/training_data.txt"
+        # Use default or first available file
+        default_file = "ai/training_data/parsed_data/chat_conversations_v1_parsed.json"
+        if os.path.exists(default_file):
+            json_data_path = default_file
+        else:
+            json_data_path = os.path.join("ai/training_data/parsed_data", parsed_files[0])
+            print(f"💡 Using available file: {json_data_path}")
         
-        print(f"\n🎯 Starting GPT-2 training on Upwork chat data")
+        print(f"\n🎯 Starting GPT-2 training from processed JSON data")
+        print(f"📄 Input file: {json_data_path}")
         
         # Initialize trainer
         trainer = ChatGPT2Trainer(model_name="gpt2")
         
-        # Train model with optimized parameters for small dataset
+        # Train model
         model_path = trainer.train_model(
-            training_data_path=training_data_path,
-            epochs=8,  # More epochs for better learning
-            batch_size=1,  # Small batch size for limited data
-            learning_rate=2e-5  # Lower learning rate for stable training
+            json_data_path=json_data_path,
+            epochs=8,
+            batch_size=1,
+            learning_rate=2e-5,
+            validate_data=True
         )
         
-        print(f"\n🎉 Training completed successfully!")
-        print(f"🎯 Trained model available at: {model_path}")
-        print(f"🚀 Ready to use trained model in chat generator!")
+        if model_path:
+            print(f"\n🎉 Training completed successfully!")
+            print(f"🎯 Trained model available at: {model_path}")
+            print(f"🚀 Ready to use trained model!")
         
-        return True
+        return model_path is not None
         
     except Exception as e:
         print(f"❌ Training failed: {str(e)}")

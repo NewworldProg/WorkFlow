@@ -24,7 +24,15 @@ class UpworkDatabase:
         # connect cursor to database
         cursor = conn.cursor()
         
+        # ==== scraped_data =======
         # Table for raw scraped data
+        # 1. scrape_type: 'browser' or 'api'
+        # 2. source_url: URL of the scraped page
+        # 3. scrape_timestamp: timestamp of the scrape
+        # 4. raw_content: raw HTML or JSON content
+        # 5. file_path: path to saved file if applicable
+        # 6. status: 'active', 'archived', 'deleted'
+        # 7. notes: any additional notes 
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS scraped_data (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,8 +45,24 @@ class UpworkDatabase:
                 notes TEXT
             )
         ''')
-        
+
+        # =========== parsed data tables =============
         # Table for parsed job data
+        # 1. scrape_id: foreign key to scraped_data
+        # 2. job_uid: unique job identifier
+        # 3. job_title: title of the job
+        # 4. job_url: URL of the job posting
+        # 5. posted_time: when the job was posted
+        # 6. job_type: 'Fixed price' or 'Hourly'
+        # 7. experience_level: required experience level
+        # 8. budget: total budget for fixed price jobs
+        # 9. hourly_rate_min: minimum hourly rate for hourly jobs
+        # 10. hourly_rate_max: maximum hourly rate for hourly jobs
+        # 11. duration: expected duration of the job
+        # 12. skills: JSON array of required skills
+        # 13. description: full job description
+        # 14. parsed_timestamp: timestamp when the job was parsed
+        # 15. FOREIGN KEY = scraped_data (id)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS jobs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,8 +83,18 @@ class UpworkDatabase:
                 FOREIGN KEY (scrape_id) REFERENCES scraped_data (id)
             )
         ''')
-        
+        # ============== proposal data =================
         # Table for parsed proposal data
+        # 1. scrape_id: foreign key to scraped_data
+        # 2. job_title: title of the job
+        # 3. proposal_text: full text of the proposal
+        # 4. bid_amount: amount bid for the job
+        # 5. proposal_status: 'submitted', 'accepted', 'rejected'
+        # 6. submitted_date: date when the proposal was submitted
+        # 7. client_feedback: feedback from the client if any
+        # 8. response_rate: client's response rate
+        # 9. parsed_timestamp: timestamp when the proposal was parsed
+        # 10. FOREIGN KEY = scraped_data (id)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS proposals (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -77,7 +111,13 @@ class UpworkDatabase:
             )
         ''')
         
+        # ============== analytics and metrics =================
         # Table for analytics and metrics
+        # 1. metric_name: name of the metric
+        # 2. metric_value: value of the metric
+        # 3. metric_date: date of the metric
+        # 4. category: 'jobs', 'proposals', 'performance'
+        # 5. created_timestamp: timestamp when the metric was recorded
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS analytics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,7 +129,13 @@ class UpworkDatabase:
             )
         ''')
         
+        # ============== keywords and search patterns =================
         # Table for keywords and search patterns
+        # 1. keyword: the keyword or pattern
+        # 2. category: category of the keyword
+        # 3. frequency: how often the keyword appears
+        # 4. last_seen: last seen timestamp
+        # 5. importance_score: score indicating importance
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS keywords (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -102,6 +148,14 @@ class UpworkDatabase:
         ''')
         
         # Table for AI-generated cover letters
+        # 1. job_id: foreign key to jobs
+        # 2. ai_provider: 'openai' or 'local_ai'
+        # 3. cover_letter_text: full text of the cover letter
+        # 4. generated_timestamp: timestamp when the cover letter was generated
+        # 5. status: 'generated', 'edited', 'sent'
+        # 6. rating: user rating 1-5
+        # 7. notes: any additional notes
+        # 8. FOREIGN KEY = jobs (id)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS cover_letters (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -126,7 +180,10 @@ class UpworkDatabase:
         # create a new entry for raw scraped data
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        # insert scraped data into table
+        # insert scraped data into table scraped_data
+        # collumns where data will be inserted
+        # placeholders for values
+        # execute insert statement
         cursor.execute('''
             INSERT INTO scraped_data (scrape_type, source_url, raw_content, file_path, notes)
             VALUES (?, ?, ?, ?, ?)
@@ -135,6 +192,7 @@ class UpworkDatabase:
         scrape_id = cursor.lastrowid
         conn.commit()
         conn.close()
+        # return the ID of the newly inserted scrape data
         return scrape_id
     
     # ======================== 🛸➕🪣 function to add parsed job data ========================

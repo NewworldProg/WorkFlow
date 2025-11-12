@@ -27,7 +27,7 @@
             "__comment": "======== node for getting latest job without cover letter ==============",
             "works": "gets latest job without cover letter using UpworkDatabase class",
             "parameters": {
-                "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_get_latest_job_without_cover_letter.ps1\"",
+                "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_get_latest_job_without_cover_letter.ps1\"",
                 "workingDirectory": "E:\\Repoi\\UpworkNotif"
             },
             "id": "get-latest-job-1",
@@ -43,7 +43,7 @@
             "__comment": "======== node for calling trained local AI model to generat cover letter ==============",
             "works": "goes in folder of program and runs the PowerShell script to generate cover letter using local AI model",
             "parameters": {
-                "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_smart_cover_letter.ps1\"",
+                "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_smart_cover_letter.ps1\"",
                 "workingDirectory": "E:\\Repoi\\UpworkNotif"
             },
             "id": "ai-generator-1",
@@ -56,25 +56,9 @@
             ]
         },
         {
-            "__comment": "======== node for importing cover letter to database ==============",
-            "works": "imports generated cover letter to database using UpworkDatabase class",
-            "parameters": {
-                "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_import_jobs_to_db.ps1\"",
-                "workingDirectory": "E:\\Repoi\\UpworkNotif"
-            },
-            "id": "import-to-db-1",
-            "name": "Import to DB",
-            "type": "n8n-nodes-base.executeCommand",
-            "typeVersion": 1,
-            "position": [
-                740,
-                300
-            ]
-        },
-        {
             "__comment": "======== node for refreshing dashboard after cover letter generation ==============",
             "parameters": {
-                "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_generate_and_open_dashboard.ps1\"",
+                "command": "powershell -ExecutionPolicy Bypass -File \"E:\\Repoi\\UpworkNotif\\run_scripts\\run_generate_and_open_dashboard.ps1\"",
                 "workingDirectory": "E:\\Repoi\\UpworkNotif"
             },
             "id": "ai-dashboard-1",
@@ -82,7 +66,7 @@
             "type": "n8n-nodes-base.executeCommand",
             "typeVersion": 1,
             "position": [
-                940,
+                740,
                 300
             ]
         }
@@ -111,17 +95,6 @@
             ]
         },
         "Smart AI Cover Letter": {
-            "main": [
-                [
-                    {
-                        "node": "Import to DB",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Import to DB": {
             "main": [
                 [
                     {
