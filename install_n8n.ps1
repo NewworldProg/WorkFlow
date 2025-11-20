@@ -136,9 +136,80 @@ if (-not $SkipN8nInstall -and -not $WorkflowsOnly) {
     }
 }
 
+# STEP 1.5: INSTALL NODE.JS DEPENDENCIES
+if (-not $SkipN8nInstall -and -not $WorkflowsOnly) {
+    Write-Host "`n📦 STEP 1.5: Installing Node.js Dependencies..." -ForegroundColor Magenta
+    
+    # Check if package.json exists
+    if (Test-Path "package.json") {
+        Write-Host "  📄 Found package.json, installing dependencies..." -ForegroundColor Cyan
+        
+        if ($DryRun) {
+            Write-Host "  [DRY RUN] Would run: npm install" -ForegroundColor Cyan
+        } else {
+            # Install dependencies from package.json
+            $npmInstallOutput = & npm install 2>&1
+            
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "  ✅ npm install completed successfully!" -ForegroundColor Green
+            } else {
+                Write-Host "  ❌ npm install failed!" -ForegroundColor Red
+                Write-Host "  Output: $npmInstallOutput" -ForegroundColor Red
+            }
+        }
+    } else {
+        Write-Host "  📦 No package.json found, installing required packages manually..." -ForegroundColor Yellow
+        
+        $nodePackages = @("puppeteer-core", "puppeteer", "selenium-webdriver", "cheerio", "fs-extra")
+        
+        foreach ($package in $nodePackages) {
+            Write-Host "    Installing $package..." -ForegroundColor Yellow -NoNewline
+            
+            if ($DryRun) {
+                Write-Host " [DRY RUN]" -ForegroundColor Cyan
+            } else {
+                $npmOutput = & npm install $package 2>&1
+                
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Host " ✅" -ForegroundColor Green
+                } else {
+                    Write-Host " ❌" -ForegroundColor Red
+                }
+            }
+        }
+        
+        if (-not $DryRun) {
+            # Create package.json for future use
+            $packageJsonContent = @{
+                "name" = "upwork-notif-scrapers"
+                "version" = "1.0.0"
+                "description" = "Node.js scrapers for Upwork Notification System"
+                "main" = "js_scrapers/browser_connect_puppeteer.js"
+                "scripts" = @{
+                    "test" = "node js_scrapers/browser_connect_puppeteer.js"
+                    "scrape" = "node js_scrapers/browser_connect_puppeteer.js"
+                }
+                "dependencies" = @{
+                    "puppeteer-core" = "^21.0.0"
+                    "puppeteer" = "^21.0.0"
+                    "selenium-webdriver" = "^4.15.0"
+                    "cheerio" = "^1.0.0-rc.12"
+                    "fs-extra" = "^11.1.1"
+                }
+                "keywords" = @("upwork", "scraping", "automation", "n8n")
+                "author" = "Upwork Notification System"
+                "license" = "MIT"
+            } | ConvertTo-Json -Depth 3
+            
+            Set-Content -Path "package.json" -Value $packageJsonContent -Encoding UTF8
+            Write-Host "  ✅ Created package.json for future installations" -ForegroundColor Green
+        }
+    }
+}
+
 # STEP 2: PYTHON VIRTUAL ENVIRONMENT SETUP
 if (-not $WorkflowsOnly) {
-    Write-Host "`nSTEP 2: Python Virtual Environment..." -ForegroundColor Magenta
+    Write-Host "`n📁 STEP 2: Python Virtual Environment..." -ForegroundColor Magenta
     
     if (Test-Path $venvPath) {
         if ($Force) {

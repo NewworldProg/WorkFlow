@@ -1,25 +1,42 @@
 {
-    "name": "upwork-notifier",
+    "name": "upwork-notif-scrapers",
     "version": "1.0.0",
-    "description": "Upwork job notifier using browser connect strategy",
+    "description": "Node.js scrapers for Upwork Notification System with N8N integration",
     "main": "js_scrapers/browser_connect_puppeteer.js",
     "scripts": {
         "start": "node js_scrapers/browser_connect_puppeteer.js",
-        "scrape": "node js_scrapers/browser_connect_puppeteer.js"
+        "scrape": "node js_scrapers/browser_connect_puppeteer.js",
+        "test": "node js_scrapers/browser_connect_puppeteer.js",
+        "install-deps": "npm install"
     },
     "keywords": [
         "upwork",
         "scraper",
         "notifier",
-        "jobs"
+        "jobs",
+        "automation",
+        "n8n",
+        "job-hunting"
     ],
-    "author": "",
-    "license": "ISC",
+    "author": "Upwork Notification System",
+    "license": "MIT",
+    "engines": {
+        "node": ">=18.0.0",
+        "npm": ">=9.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/NewworldProg/WorkFlow.git"
+    },
     "dependencies": {
         "google-auth-library": "^10.4.2",
         "google-spreadsheet": "^5.0.2",
         "googleapis": "^164.1.0",
         "jsdom": "^27.0.1",
-        "puppeteer-core": "^24.25.0"
+        "puppeteer-core": "^24.25.0",
+        "puppeteer": "^21.0.0",
+        "selenium-webdriver": "^4.15.0",
+        "cheerio": "^1.0.0-rc.12",
+        "fs-extra": "^11.1.1"
     }
 }
