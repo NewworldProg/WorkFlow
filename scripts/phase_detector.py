@@ -59,6 +59,8 @@ class PhaseDetector:
     #7. move model to device
     #8. set model to evaluation mode
     def __init__(self, model_dir=None):
+        """Initialize PhaseDetector with fallback to base BERT if trained model not found"""
+        
         # Use default path if none provided
         if model_dir is None:
             model_dir = os.path.join(
@@ -68,40 +70,74 @@ class PhaseDetector:
                 'trained_models', 
                 'phase_classifier_v1'
             )
-        # var to hold directory to model
+        
         self.model_dir = model_dir
-        # var to hold device that will be used for running model cuda (graphics card) or cpu
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
+        # Try to load trained model first
+        if os.path.exists(model_dir) and os.path.exists(os.path.join(model_dir, 'metadata.json')):
+            try:
+                print(f"🔄 Loading trained phase classifier...")
+                self._load_trained_model(model_dir)
+                print(f"✅ Trained phase classifier loaded")
+                print(f"[INFO] Accuracy: {self.metadata.get('accuracy', 'unknown'):.1f}%")
+                
+            except Exception as e:
+                print(f"⚠️ Error loading trained model: {e}")
+                print(f"🔄 Falling back to base BERT model...")
+                self._load_fallback_model()
+        
+        else:
+            print(f"⚠️ Trained model not found at {model_dir}")
+            print(f"🔄 Using base BERT model (fallback)")
+            self._load_fallback_model()
+
+    def _load_trained_model(self, model_dir):
+        """Load trained model"""
         # Load metadata
-        # var to hold directory to metadata.json
         metadata_path = os.path.join(model_dir, 'metadata.json')
-        # open metadata file
         with open(metadata_path, 'r', encoding='utf-8') as f:
             self.metadata = json.load(f)
-        # var to hold phase_labels array from metadata
+        
         self.phase_labels = self.metadata['phase_labels']
-        # var to hold id to phase mapping
         self.id_to_phase = {int(k): v for k, v in self.metadata['id_to_phase'].items()}
         
-        # Load tokenizer from model directory
+        # Load tokenizer and model
         self.tokenizer = BertTokenizer.from_pretrained(model_dir)
-
-        # Load model for classification and input how many classes are there
         self.model = PhaseClassifier(n_classes=len(self.phase_labels))
-        # var to hold directory which has the model
+        
         model_path = os.path.join(model_dir, 'phase_classifier.pth')
-        # load the model and use load_state_dict function to load trained model
         self.model.load_state_dict(torch.load(model_path, map_location=self.device))
-        # move model to device
         self.model.to(self.device)
-        # set model to evaluation mode
         self.model.eval()
+        
+        self.is_trained_model = True
 
-        #log model dir, metadata info, and other accuracy details
-        print(f"[OK] Phase classifier loaded from {model_dir}")
-        print(f"[INFO] Model trained on {self.metadata.get('training_samples', 'unknown')} samples")
-        print(f"[INFO] Accuracy: {self.metadata.get('accuracy', 'unknown'):.2f}%")
+    def _load_fallback_model(self):
+        """Load base BERT model as fallback"""
+        # Create default phase mapping for base BERT
+        self.phase_labels = [
+            'initial_response', 'ask_details', 'knowledge_check', 'language_confirm',
+            'rate_negotiation', 'deadline_samples', 'structure_clarification', 'contract_acceptance'
+        ]
+        self.id_to_phase = {i: label for i, label in enumerate(self.phase_labels)}
+        
+        # Load base BERT
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        self.model = PhaseClassifier(n_classes=len(self.phase_labels))
+        
+        # Initialize with random weights (base model)
+        self.model.to(self.device)
+        self.model.eval()
+        
+        self.is_trained_model = False
+        self.metadata = {
+            'accuracy': 'unknown (base model)',
+            'training_samples': 'N/A (base model)'
+        }
+        
+        print(f"✅ Base BERT model loaded (fallback)")
+        print(f"[WARNING] Using untrained model - predictions will be less accurate")
     # predict function that takes context and return probabilities flag
     #1. tokenize the context text
     #2. from tokenized text give tokens the id
@@ -138,11 +174,18 @@ class PhaseDetector:
         predicted_phase = self.id_to_phase[predicted.item()]
         # get confidence score
         confidence_score = confidence.item()
+        
+        # Adjust confidence for untrained model
+        if not self.is_trained_model:
+            confidence_score = confidence_score * 0.3  # Lower confidence for base model
+        
         # prepare result dictionary of phase and confidence
         result = {
             'phase': predicted_phase,
-            'confidence': round(confidence_score, 4)
+            'confidence': round(confidence_score, 4),
+            'model_type': 'trained' if self.is_trained_model else 'base_bert'
         }
+        
         # optional return of all probabilities with their phase labels 
         if return_probabilities:
             all_probs = {
@@ -160,54 +203,3 @@ class PhaseDetector:
             result = self.predict(context)
             results.append(result)
         return results
-# test function for phase detector to see if it works correctly
-def test_detector():
-    """Test the phase detector"""
-    print("=" * 60)
-    print("TESTING PHASE DETECTOR")
-    print("=" * 60)
-    
-    model_dir = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), 
-        'ai',
-        'phase_detector_trainer', 
-        'trained_models', 
-        'phase_classifier_v1'
-    )
-    
-    if not os.path.exists(model_dir):
-        print(f"[ERROR] Model not found at {model_dir}")
-        print("[INFO] Please train the model first using phase_detector_trainer/train_phase_classifier.py")
-        return
-    
-    detector = PhaseDetector(model_dir)
-    
-    # Test cases
-    test_cases = [
-        "Hello! I saw your application. Are you available?",
-        "We need content about casino games. Can you handle technical topics?",
-        "Can you explain what RTP means in slot machines?",
-        "Which language do you prefer - English or Dutch?",
-        "Our budget is $0.06 per word. Does that work?",
-        "We need the first batch by Monday. Can you deliver?",
-        "Each article needs H1, H2s, and FAQ section with SEO.",
-        "I'm sending the contract now. Please accept to start."
-    ]
-    
-    print("\n[INFO] Testing with sample contexts:\n")
-    
-    for i, context in enumerate(test_cases, 1):
-        result = detector.predict(context, return_probabilities=True)
-        print(f"{i}. Context: \"{context}\"")
-        print(f"   → Phase: {result['phase']}")
-        print(f"   → Confidence: {result['confidence']:.2%}")
-        print(f"   → Top 3 probabilities:")
-        
-        sorted_probs = sorted(result['all_probabilities'].items(), key=lambda x: x[1], reverse=True)[:3]
-        for phase, prob in sorted_probs:
-            print(f"      - {phase}: {prob:.2%}")
-        print()
-
-
-if __name__ == "__main__":
-    test_detector()
